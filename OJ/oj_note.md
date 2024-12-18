@@ -76,5 +76,15 @@
  vue create soyaoj
 ~~~
 
-等待安装完成后，进入到/soyaoj目录，运行npm run serve，进入到Vue欢迎页面即可成功
+等待安装完成后，进入到/soyaoj目录，运行npm run serve，进入到Vue欢迎页面即成功
+引入arco-design组件：
+~~~
+npm install --save-dev @arco-design/web-vue
+~~~
+
+同时在项目main.ts文件中添加
+~~~
+import ArcoVue from '@arco-design/web-vue';
+import '@arco-design/web-vue/dist/arco.css';
+~~~
 
