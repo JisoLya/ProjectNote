@@ -97,7 +97,7 @@ root:123456
 
 题目内容：存放题目的介绍，输入输出的提示，描述与详情
 
-题目标题（JSON数组字符串）：栈，队列，链表...
+题目标题（json数组字符串）：栈，队列，链表...
 
 题目答案：管理员设置标准答案
 
@@ -113,3 +113,34 @@ root:123456
 内存限制
 
 这部分可以采用JSON对象的形式，JSON易于扩展，未来需要添加字段时不需要再进数据库中修改表
+
+#### 用户提交表
+题目id： questionId
+
+语言：language
+
+判题状态：status（判题中，待判题，成功，失败）
+
+判题信息（判题过程中得到的一些信息，如程序失败的原因，执行耗时，消耗空间）
+
+judjeInfo（json对象）
+~~~json
+{
+   "message":"程序执行信息",
+   "time":"10000",//ms
+   "memory":"10000",//kb
+}
+~~~
+
+执行信息的枚举值：
+- Accepted 成功
+- Wrong Answer 答案错误
+- Compile Error 编译错误
+- Memory Limit Exceeded 内存超出
+- Time Limit Exceeded 运行超时
+- Presentation Error 展示错误（输出多出空格或换行）
+- Output Limit Exceeded 输出溢出（某些需要输出文件的题目）
+- Waiting 等待中
+- Dangerous Operation 危险操作
+- Runtime Error
+- System Error
