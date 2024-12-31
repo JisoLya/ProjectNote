@@ -72,19 +72,44 @@
 
 ### Vue脚手架搭建
 在命令行中输入
-~~~
+~~~shell
  vue create soyaoj
 ~~~
 
 等待安装完成后，进入到/soyaoj目录，运行npm run serve，进入到Vue欢迎页面即成功
 引入arco-design组件：
-~~~
+~~~shell
 npm install --save-dev @arco-design/web-vue
 ~~~
 
 同时在项目main.ts文件中添加
-~~~
+~~~javascript
 import ArcoVue from '@arco-design/web-vue';
 import '@arco-design/web-vue/dist/arco.css';
 ~~~
+![服务器IP配置](./serverNetConfig.png)
 
+root:123456
+
+## 数据库表设计
+#### 题目表
+题目标题
+
+题目内容：存放题目的介绍，输入输出的提示，描述与详情
+
+题目标题（JSON数组字符串）：栈，队列，链表...
+
+题目答案：管理员设置标准答案
+
+提交数：通过题目人数，已提交题目人数，便于统计分析
+
+#### 判题相关字段
+输入用例
+
+输出用例
+
+时间限制
+
+内存限制
+
+这部分可以采用JSON对象的形式，JSON易于扩展，未来需要添加字段时不需要再进数据库中修改表
