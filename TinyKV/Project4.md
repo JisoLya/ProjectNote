@@ -42,5 +42,13 @@ TinyKV使用三种列簇，`default`来保存用户的值，`lock`保存锁，`w
 
 user key和timestamp被拼接成为一个encoded key。这样的编码可以保证首先根据user key升序排列，接着根据time stamp升序排列。这样就保证了在迭代encoded key的时候，获取的都是最新的版本。编码和解码的函数都定义在transaction.go中。
 
-这一阶段需要实现一个简单的结构体`MvccTxn`,在partB和partC中，你需要使用`MvccTxn API`来实现一个事务API， `MvccTxn`提供了读写操作，这写操作基于user key和锁、写入、和值的逻辑表示。修改都被`MvccTxn`手机，一旦某条命令的所有修改都被收集了，他们会被立刻写入到下层的数据库。这保证了命令的成功或失败都是原子性的。注意到一个MVCC事务和TinySQL的事务是不同的。一个MVCC事务只包含了*一条命令的所有操作* 而不是 *一系列的命令*。
+这一阶段需要实现一个简单的结构体`MvccTxn`,在partB和partC中，你需要使用`MvccTxn API`来实现一个事务API， `MvccTxn`提供了读写操作，这写操作基于user key和锁、写入、和值的逻辑表示。修改都被`MvccTxn`收集，一旦某条命令的所有修改都被收集了，他们会被立刻写入到下层的数据库。这保证了命令的成功或失败都是原子性的。注意到一个MVCC事务和TinySQL的事务是不同的。一个MVCC事务只包含了*一条命令的所有操作* 而不是 *一系列的命令*。
 
+`MvccTxn`定义在transaction.go中,其中有一个模拟的实现，以及一些用于编码和解码key的函数。测试函数在transaction_test.go中。在PartA中，你需要实现`MvccTxn`的所有方法来通过所有的测试，每一个方法都有他的期望的行为。
+
+一些提示
+>
+ 1. 一个MvccTxn应该知道他所表示请求的开始时间戳
+> 
+ 2. 最具挑战的很有可能是`GetValue`方法，以及重试写的方法。你将会需要使用StorageReader来迭代一个CF。时刻记住编码后key的顺序，以及当需要确定一个值是否是合法的，取决于它的commit timestamp而不是start timestamp
+>
