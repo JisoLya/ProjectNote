@@ -40,7 +40,7 @@ e.g.
 
 TinyKV使用三种列簇，`default`来保存用户的值，`lock`保存锁，`write`来记录修改。列簇`lock`可以利用user key来访问；他存储了序列化的`Lock`数据结构(定义在lock.go中)。`default`列簇通过user key和事务的start timestamp来访问，只存储了用户的数据。`write`列簇通过user key和事务的commit timestamp来访问，存储了`Write`数据结构(定义在write.go)
 
-user key和timestamp被拼接成为一个encoded key。这样的编码可以保证首先根据user key升序排列，接着根据time stamp升序排列。这样就保证了在迭代encoded key的时候，获取的都是最新的版本。编码和解码的函数都定义在transaction.go中。
+user key和timestamp被拼接成为一个encoded key。key的编码方式是编码后的 key 的升序首先是 user key（升序），然后是时间戳（降序）。这样就保证了在迭代encoded key的时候，获取的都是最新的版本。编码和解码的函数都定义在transaction.go中。
 
 这一阶段需要实现一个简单的结构体`MvccTxn`,在partB和partC中，你需要使用`MvccTxn API`来实现一个事务API， `MvccTxn`提供了读写操作，这写操作基于user key和锁、写入、和值的逻辑表示。修改都被`MvccTxn`收集，一旦某条命令的所有修改都被收集了，他们会被立刻写入到下层的数据库。这保证了命令的成功或失败都是原子性的。注意到一个MVCC事务和TinySQL的事务是不同的。一个MVCC事务只包含了*一条命令的所有操作* 而不是 *一系列的命令*。
 
