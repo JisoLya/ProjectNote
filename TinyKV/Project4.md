@@ -68,3 +68,24 @@ TinyKV可以并发的处理多个请求，因而可能会存在竟态条件。�
 一些提示
 >- 所有的指令都是事务的一部分。每个事务被一个start timestamp唯一确定
 >- 任何一个请求都有可能引发region error，这类错误应当以与处理原始请求相同的方式进行处置。大多数响应都包含一种指示非致命错误（例如键被锁定等场景）的机制。通过向客户端反馈这类错误信息，客户端可以在等待一段时间后重新尝试执行事务。
+
+## PartC
+在PartC中，你将要实现`KvScan`、`KvCheckTxnStatus`，`KvBatchRollBack`以及`KvResolveLock`方法。
+
+`KvScan`是一个事务版本的`RawScan`，从数据库中读取很多数据。但是就像`KvGet`一样，他在一个特定的时间点执行操作。由于MVCC，`KvScan`明显要比`RawSacn`更加复杂-你不能简单的迭代底层的存储，因为底层存储了不同版本
+的值以及编码。
+
+当客户端遇在写入事务的时候遇到了问题之会利用`KvCheckTxnStatus`, `KvBatchRollback`, and `KvResolveLock`。每一个函数都要涉及到锁状态的修改。
+
+`KvCheckTxnStatus`用来检查超时，清除过期的锁并返回锁的信息。
+
+`KvBatchRollback`检查一个key是否被某个事务上锁，如果被某个事务上锁了，那么移除锁、移除所有的值并留下一个Rollback作为一个Write。
+
+`KvResolveLock`检查一系列被上锁的锁，并决定他们是一起提交或者回滚。
+
+一些提示
+> - 对于Scan，实现你自己的Scanner iterator会很有用，框架已经在`kv/transaction/mvcc/scanner.go`给出。
+> - 当Scan的时候，某些单独的key的错误可以被记录下来而不是造成Scan的停止，对于其他的命令，错误应该引起系统的停止。
+> - 由于`KvResolveLock`会提交或回滚事务，一些`KvBatchRollback`和`KvCommit`的代码可以共享。
+> - 一个时间戳是由逻辑部分和物理部分构成的，时间戳的物理部分大致等同于单调递增的物理时钟时间。
+通常情况下，我们会使用完整的时间戳（例如在比较时间戳是否相等时）。但在计算超时时间时，必须仅使用时间戳的物理部分。为此，你可以参考 transaction.go 中的 PhysicalTime 函数。
