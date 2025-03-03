@@ -47,11 +47,9 @@ user key和timestamp被拼接成为一个encoded key。key的编码方式是编�
 `MvccTxn`定义在transaction.go中,其中有一个模拟的实现，以及一些用于编码和解码key的函数。测试函数在transaction_test.go中。在PartA中，你需要实现`MvccTxn`的所有方法来通过所有的测试，每一个方法都有他的期望的行为。
 
 一些提示
->
- 1. 一个MvccTxn应该知道他所表示请求的开始时间戳
-> 
- 2. 最具挑战的很有可能是`GetValue`方法，以及重试写的方法。你将会需要使用StorageReader来迭代一个CF。时刻记住编码后key的顺序，以及当需要确定一个值是否是合法的，取决于它的commit timestamp而不是start timestamp
->
+>- 一个MvccTxn应该知道他所表示请求的开始时间戳
+>- 最具挑战的很有可能是`GetValue`方法，以及重试写的方法。你将会需要使用StorageReader来迭代一个CF。时刻记住编码后key的顺序，以及当需要确定一个值是否是合法的，取决于它的commit timestamp而不是start timestamp
+
 
 ## PartB
 在这一部分，你将使用PartA中完成的`MvccTxn`来实现`KvGet`、`KvPrewrite`、`KvCommit`所对应的handlers。
@@ -67,8 +65,6 @@ user key和timestamp被拼接成为一个encoded key。key的编码方式是编�
 
 TinyKV可以并发的处理多个请求，因而可能会存在竟态条件。例如，TinyKV可能在同时接收两个客户端的请求，一个请求commit一个key，而另外一个需要roll back这个key。为了避免竟态条件，你可以将数据库中的任何一个key锁存起来，这个latch运作起来很像per-key mutex。一个latch会覆盖所有的CF。latches.go中定义了一个`Latches`结构体以及他对应的API。
 
->
 一些提示
-- 所有的指令都是事务的一部分。每个事务被一个start timestamp唯一确定
-- 任何一个请求都有可能引发region error，这类错误应当以与处理原始请求相同的方式进行处置。大多数响应都包含一种指示非致命错误（例如键被锁定等场景）的机制。通过向客户端反馈这类错误信息，客户端可以在等待一段时间后重新尝试执行事务。
->
+>- 所有的指令都是事务的一部分。每个事务被一个start timestamp唯一确定
+>- 任何一个请求都有可能引发region error，这类错误应当以与处理原始请求相同的方式进行处置。大多数响应都包含一种指示非致命错误（例如键被锁定等场景）的机制。通过向客户端反馈这类错误信息，客户端可以在等待一段时间后重新尝试执行事务。
