@@ -115,7 +115,7 @@ Introduce a Multi-Raft architecture to fundamentally enhance horizontal scalabil
     ```
     {Ip}:{Port}:{TransactionID}
     ```
-    ![xid_generation.png](./xid_generation.png)
+    ![](./xid_generation.png)
     - Ip: Ip address of TC server.
     - Port: The port TC server listen on.
     - TransactionID: Unique transaction ID.
@@ -163,7 +163,7 @@ Introduce a Multi-Raft architecture to fundamentally enhance horizontal scalabil
     }
     ```
 2. Mutiple Raft Server Management
-    We can modify RaftServerManager or make a new java class to support mutiple raft groups.
+    We can modify RaftServerManager to support mutiple raft groups.
 
     Here’s an outline of what RaftServerManager should do:
 
@@ -284,7 +284,7 @@ group-2: Node2(Leader), Node1(Follower), Node3(Follower)
 ```
 First of all, `RaftCoordinator` should check leader status when routing request to TC instance. 
 
-In the current architecture, after the Group1-Leader receives a global transaction initiation request, Group1 starts replicating the transaction request information. If the Group1-Leader fails at this stage, the existing mechanism leverages the `onStartFollowing` callback function to update the Group1-Leader information. The Raft protocol guarantees that only nodes with the most up-to-date logs can be elected as the new Leader. Since the newly elected Leader retains all transaction details from its predecessor, the transaction can continue uninterrupted. Furthermore, subsequent requests for this transaction can also be correctly routed to the new Leader.
+In the current architecture, after the Group1-Leader receives a global transaction request, Group1 starts replicating the transaction request information. If the Group1-Leader fails at this stage, the existing mechanism leverages the `onStartFollowing` callback function to update the Group1-Leader information. The Raft protocol guarantees that only nodes with the most up-to-date logs can be elected as the new Leader. Since the newly elected Leader retains all transaction details from its predecessor, the transaction can continue uninterrupted. Furthermore, subsequent requests for this transaction can also be correctly routed to the new Leader.
 
 For Group2, it can continue operating normally because only a single follower is lost. Even in this scenario, if a leader election is triggered, the remaining nodes can still form a majority quorum to ensure uninterrupted operation.
 
