@@ -290,7 +290,7 @@ For Group2, it can continue operating normally because only a single follower is
 
 **Summary of Actions for Leader Failover**:
 
-- Centralized Routing Table Synchronization
+- Update Routing Table Synchronization
 
     - Immediately update the global routing table once the new Leader is elected.
 
