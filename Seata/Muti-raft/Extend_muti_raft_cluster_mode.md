@@ -84,7 +84,7 @@ Introduce a Multi-Raft architecture to fundamentally enhance horizontal scalabil
 - **Virtualized Raft Groups**: Multiple autonomous Raft groups manage distinct shards
 - **Role Multiplexing**: Each node serves as Leader for some groups, Follower for others
 
-![Muti-Raft Architecture](./muti_Raft.png)
+![Muti-Raft Architecture](./muti_raft_ex.png)
 
 ### Key Component Design
 
@@ -143,14 +143,13 @@ Introduce a Multi-Raft architecture to fundamentally enhance horizontal scalabil
     ```
 2. Multiple Raft Server Management
 
-    This component extends the existing RaftServerManager to support multiple Raft groups operating concurrently. It provides centralized management for all Raft groups running across physical nodes.
+    This component extends the existing `RaftServerManager` to support multiple Raft groups operating concurrently. It provides centralized management for all Raft groups running across physical nodes.
 
     Key responsibilities include:
 
     - Initializing multiple Raft groups with their individual configurations
     - Managing the lifecycle of each Raft server instance
     - Providing group-specific status information (leader status, term number)
-    - Facilitating inter-group communication and coordination
     - Maintaining a global view of all operational groups
 
 3. Enhanced File Registry Integration
@@ -173,13 +172,13 @@ Introduce a Multi-Raft architecture to fundamentally enhance horizontal scalabil
 5. RaftCoordinator
     Current `RaftCoordinator` only support sigle Raft group:
     ![](./single_RaftGroup.png)
-    We need to do following things:
+    To support Multi-Raft, we need to do following things:
     - When a new request coming to `RaftCoordinator`, it should check leader status when routing request to TC instance.
     - Add routing logic to `exceptionHandleTemplate` to support routing different requests to different Raft groups based on XID.
     - Verify the Leader identity of the target Raft group associated with the request. Method `isPass` should be modified.
     - Maintain independent Leader status for each Raft group. `onApplicationEvent` should be able to process multi-group envents.
     - Monitor leader change events for all Raft groups. 
-    - Attach target Raft-group context to individual requests.
+    - Attach target Raft-Group context to individual requests.
 
 6. Log Replication Issue
     Multi-Raft requires nodes acting as Leader in one Raft group and Follower in another to maintain a single multiplexed RPC channel between endpoint pairs. This connection reuse mechanism prevents quadratic growth (O(n²)) of network connections as cluster scale increases. In this case, we need to add a Raft message routing layer for the two instances to ensure that the logs of each Group are replicated independently.
@@ -315,7 +314,7 @@ private void enterDegradedMode(String group) {
 ```
 > **Node Rejoining**
 
-When a node recovers from a failure, it must rejoin its original Raft group. To satisfy this recovery requirement, the system must persist node-to-group membership mappings to stable storage during the system startup.
+When a node recovers from failure, it must rejoin its original Raft group. To satisfy this recovery requirement, the system must persist node-to-group membership mappings to stable storage during the system startup.
 ![](./node_start.png)
 We can enhance the `start` method in `RaftServer` to check whether the node is in status of *rejoin*.
 
@@ -395,7 +394,7 @@ Performances metrics:
 1. Complete the modification of `RaftSessionManager` and `RaftCoordinator`.
 
 ##### August 5-21
-1. Complete the testing of Multi-Raft, including:
+1. Complete the tests of Multi-Raft, including:
     - Verify Raft message routing.
     - Verify the request routing.
     - Verify the node failure-recovery mechanism.

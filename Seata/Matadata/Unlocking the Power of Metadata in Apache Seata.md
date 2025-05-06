@@ -138,41 +138,53 @@ Key performance metrics — including current workload, health status, network l
 
 ![interaction between registry, client and server](./whiteboard_exported_image.png)
 ### Timeline
-##### April 1-17
+##### May 4-20
 1. Familiarize with the code and principles of the registry and load balancing module.
 2. Research what kind of metadata type could lead to better load balancing strategies, and discuss with the mentor.
 3. Familiarize how TM/RM interact with server groups.
 
-##### April 19-29
+##### May 21-28
 1. Contribute basic work, such as bug fixes and documentation supplements, to the load balancing and registry module.
-##### May 1-10
+##### June 1-14
 1. Refactor metadata architecture for server-to-registry data exposure.
 2. Add document about the new metadata.
-##### May 11-26
+##### June 15-30
 1. Refactor registration logic for server initialization with multi-registry support(Nacos, redis, zookeeper, Eureka, Consul, Etcd3...).
-##### May 27 -June 10
+##### July 1-14
 1. Refactor the registration module's test logic to adapt to the new version of registration logic.
 2. Registration module integration testing to test the correctness of the Registration.
-##### June 11-26
+##### July 15-31
 1. Refactor the hearbeat interaction between server and registry.
 2. Compose test to verify the interaction.
 3. Write document of new version of heartbeat interacation.
-##### June 27-July 11
+##### August 1-4
 1. Implement client-side logic- retrieve metadata from registry.
-3. Write mid-term document.
+2. Write mid-term document.
 
-##### July 12-25
+##### August 5-21
 1. Provide APIs for custom load balancing strategies based on instance metadata.
 2. Write document for custom load balancing strategies.
+3. Complete the extension of metadata and its usage on both the server side and client side
 
-##### July 27- August 4
-1. Complete the extension of metadata and its usage on both the server side and client side
-##### August 5-21
-1. Complete testing of new version
+##### August 21-25
+1. Complete testing of new version.
 2. Fix implementation solutions according to the problems found during testing.
 3. Write test reports.
 4. Write final implementation document.
 
-##### August 22-30
+##### August 25-28
 1. Complete the final implementation document.
 2. Merge code and perform final finishing work according to the issues raised in the review.
+
+
+### Personal Information
+##### Basic Information
+**Name**: Liu Yange
+**Email Address**: soliuyan@163.com
+**Github Address**: [Soyan](https://github.com/JisoLya)
+##### Education Background
+XDU, Postgraduate, 2024-2027
+##### Skills
+1. Proficient in Java programming language and have participated in multiple Java projects.
+2. Familiar with distributed consensus algorithms.
+3. Familiar with SOFAJRaft library.
